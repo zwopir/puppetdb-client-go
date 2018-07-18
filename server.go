@@ -1,19 +1,28 @@
 package puppetdb
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 /*
-Representation of a PuppetDB server instance.
+Server Representation of a PuppetDB server instance.
 
 Use NewServer to create a new instance.
 */
 type Server struct {
 	BaseUrl       string
 	HTTPTransport http.RoundTripper
+	HTTPTimeout   time.Duration
+}
+
+// SetHTTPTimeout to set custom Timeout of http.Client
+func (s *Server) SetHTTPTimeout(t time.Duration) {
+	s.HTTPTimeout = t
 }
 
 /*
-Create a new instance of a Server for usage later.
+NewServer Create a new instance of a Server for usage later.
 
 This is usually the main entry point of this SDK, where you would create
 this initial object and use it to perform activities on the instance in
@@ -24,7 +33,7 @@ func NewServer(baseUrl string) Server {
 }
 
 /*
-Create a new instance of a Server for usage later.
+NewServerWithTransport Create a new instance of a Server for usage later.
 
 Comparable to NewServer, but with an additional parameter to specify the http transport
 (i.e. SSL options)
@@ -37,5 +46,6 @@ func newServer(baseUrl string, httpTransport http.RoundTripper) Server {
 	return Server{
 		BaseUrl:       baseUrl,
 		HTTPTransport: httpTransport,
+		HTTPTimeout:   time.Second * 30,
 	}
 }
