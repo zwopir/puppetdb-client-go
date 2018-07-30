@@ -36,8 +36,8 @@ func NewServer(baseUrl string, opts ...Opt) *Server {
 	return s
 }
 
-// WithTransport sets the transport for the api client
-func WithRoundtripper(rt http.RoundTripper) Opt {
+// WithRoundTripper sets the roundtrippter for the api http client
+func WithRoundTripper(rt http.RoundTripper) Opt {
 	return func(s *Server) {
 		s.client.Transport = rt
 	}
