@@ -36,8 +36,7 @@ func (server *Server) SubmitCommand(command string, version int, payload interfa
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 
-	client := &http.Client{Transport: server.HTTPTransport}
-	resp, err := client.Do(req)
+	resp, err := server.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
