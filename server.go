@@ -11,15 +11,12 @@ Server Representation of a PuppetDB server instance.
 Use NewServer to create a new instance.
 */
 type Server struct {
-	BaseUrl       string
-	HTTPTransport http.RoundTripper
-	HTTPTimeout   time.Duration
+	client  *http.Client
+	BaseUrl string
 }
 
-// SetHTTPTimeout to set custom Timeout of http.Client
-func (s *Server) SetHTTPTimeout(t time.Duration) {
-	s.HTTPTimeout = t
-}
+// Opt is an option func
+type Opt func(*Server)
 
 /*
 NewServer Create a new instance of a Server for usage later.
@@ -28,24 +25,27 @@ This is usually the main entry point of this SDK, where you would create
 this initial object and use it to perform activities on the instance in
 question.
 */
-func NewServer(baseUrl string) Server {
-	return newServer(baseUrl, nil)
+func NewServer(baseUrl string, opts ...Opt) *Server {
+	s := &Server{
+		client:  http.DefaultClient,
+		BaseUrl: baseUrl,
+	}
+	for _, o := range opts {
+		o(s)
+	}
+	return s
 }
 
-/*
-NewServerWithTransport Create a new instance of a Server for usage later.
-
-Comparable to NewServer, but with an additional parameter to specify the http transport
-(i.e. SSL options)
-*/
-func NewServerWithTransport(baseUrl string, httpTransport http.RoundTripper) Server {
-	return newServer(baseUrl, httpTransport)
+// WithRoundTripper sets the roundtrippter for the api http client
+func WithRoundTripper(rt http.RoundTripper) Opt {
+	return func(s *Server) {
+		s.client.Transport = rt
+	}
 }
 
-func newServer(baseUrl string, httpTransport http.RoundTripper) Server {
-	return Server{
-		BaseUrl:       baseUrl,
-		HTTPTransport: httpTransport,
-		HTTPTimeout:   time.Second * 30,
+// WithTimeout sets the http client timeout
+func WithTimeout(d time.Duration) Opt {
+	return func(s *Server) {
+		s.client.Timeout = d
 	}
 }

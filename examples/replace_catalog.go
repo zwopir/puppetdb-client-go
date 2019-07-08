@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// Create catalog
-        catalog := puppetdb.NewCatalogWireFormat()
+	catalog := puppetdb.NewCatalogWireFormat()
 	catalog.Metadata.ApiVersion = 1
 	catalog.Data.Name = "foobar"
 	catalog.Data.Version = "3"
@@ -27,7 +27,7 @@ func main() {
 	r1.File = "/etc/puppet/manifests/site.pp"
 	r1.Line = 1
 	r1.Tags = []string{"foo", "bar"}
-	r1.Parameters = map[string]string{"foo":"bar"}
+	r1.Parameters = map[string]string{"foo": "bar"}
 
 	var r2 puppetdb.CatalogResource
 	r2.Type = "File"
@@ -36,7 +36,7 @@ func main() {
 	r2.File = "/etc/puppet/manifests/site.pp"
 	r2.Line = 1
 	r2.Tags = []string{"foo", "bar"}
-	r2.Parameters = map[string]string{"foo":"bar"}
+	r2.Parameters = map[string]string{"foo": "bar"}
 
 	catalog.Data.Resources = []puppetdb.CatalogResource{r1, r2}
 
